@@ -13,11 +13,13 @@ It loads the scenario configuration, loads the scenario and manager,
 and finally triggers the scenario execution.
 """
 
+
 from __future__ import print_function
 
 # for compatible with python 2.7, inserts python 3.7 API manualy
 import sys
-sys.path.insert(0,"~/carla_simulator/CARLA_0.9.13/PythonAPI/carla/dist/carla-0.9.13-py3.7-linux-x86_64.egg")
+import os
+sys.path.insert(0,os.path.expanduser("~/carla_simulator/CARLA_0.9.13/PythonAPI/carla/dist/carla-0.9.13-py3.7-linux-x86_64.egg"))
 
 import glob
 import traceback
@@ -27,12 +29,13 @@ from datetime import datetime
 from distutils.version import LooseVersion
 import importlib
 import inspect
-import os
 import signal
 import sys
 import time
 import json
 import pkg_resources
+
+
 
 import carla
 
