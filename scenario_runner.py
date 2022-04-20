@@ -15,6 +15,10 @@ and finally triggers the scenario execution.
 
 from __future__ import print_function
 
+# for compatible with python 2.7, inserts python 3.7 API manualy
+import sys
+sys.path.insert(0,"~/carla_simulator/CARLA_0.9.13/PythonAPI/carla/dist/carla-0.9.13-py3.7-linux-x86_64.egg")
+
 import glob
 import traceback
 import argparse
