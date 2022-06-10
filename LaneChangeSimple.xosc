@@ -2,7 +2,8 @@
 <OpenSCENARIO>
   <FileHeader revMajor="1" revMinor="0" date="2020-03-24T12:00:00" description="CARLA:LaneChangeSimple" author=""/>
   <ParameterDeclarations>
-    <ParameterDeclaration name="leadingSpeed" parameterType="double" value="10.0"/>
+    <ParameterDeclaration name="leadingSpeed" parameterType="double" value="13.89"/>
+    <ParameterDeclaration name="cutoutDistance" parameterType="double" value="13.89"/>
   </ParameterDeclarations>
   <CatalogLocations/>
   <RoadNetwork>
@@ -82,7 +83,7 @@
           <PrivateAction>
             <TeleportAction>
               <Position>
-                <WorldPosition x="-9.4" y="-152.8" z="0.5" h="1.57079632679"/>
+                <WorldPosition x="271.7" y="-387.4" z="0.3" h="-3"/>
               </Position>
             </TeleportAction>
           </PrivateAction>
@@ -110,16 +111,36 @@
           <PrivateAction>
             <TeleportAction>
               <Position>
-                <WorldPosition x="-9.4" y="-71.0" z="0.5" h="1.57079632679"/>
+                <WorldPosition x="197" y="-388.8" z="0.5" h="3.14"/>
               </Position>
             </TeleportAction>
+          </PrivateAction>
+          <PrivateAction>
+            <ControllerAction>
+              <AssignControllerAction>
+                <Controller name="adversaryAgent">
+                  <Properties>
+                    <Property name="module" value="simple_vehicle_control"/>
+                  </Properties>
+                </Controller>
+              </AssignControllerAction>
+              <OverrideControllerValueAction>
+                <Throttle value="0" active="false"/>
+                <Brake value="0" active="false"/>
+                <Clutch value="0" active="false"/>
+                <ParkingBrake value="0" active="false"/>
+                <SteeringWheel value="0" active="false"/>
+                <Gear number="0" active="false"/>
+              </OverrideControllerValueAction>
+            </ControllerAction>
           </PrivateAction>
         </Private>
         <Private entityRef="standing">
           <PrivateAction>
             <TeleportAction>
               <Position>
-                <WorldPosition x="-8.2" y="29.2" z="0.5" h="1.57079632679"/>
+                <!-- <WorldPosition x="-8.3" y="155.1" z="0.5" h="1.57079632679"/> -->
+                <WorldPosition x="-8.6" y="95" z="0.5" h="1.57079632679"/>
               </Position>
             </TeleportAction>
           </PrivateAction>
@@ -138,7 +159,7 @@
                 <PrivateAction>
                   <LongitudinalAction>
                     <SpeedAction>
-                      <SpeedActionDynamics dynamicsShape="step" value="50" dynamicsDimension="distance"/>
+                      <SpeedActionDynamics dynamicsShape="linear" value="10" dynamicsDimension="time"/>
                       <SpeedActionTarget>
                         <AbsoluteTargetSpeed value="$leadingSpeed"/>
                       </SpeedActionTarget>
@@ -166,9 +187,9 @@
                 <PrivateAction>
                   <LateralAction>
                     <LaneChangeAction>
-                      <LaneChangeActionDynamics dynamicsShape="linear" value="25" dynamicsDimension="distance"/>
+                      <LaneChangeActionDynamics dynamicsShape="linear" value="1" dynamicsDimension="distance"/>
                       <LaneChangeTarget>
-                        <RelativeTargetLane entityRef="adversary" value="-1"/>
+                        <RelativeTargetLane entityRef="adversary" value="1"/>
                       </LaneChangeTarget>
                     </LaneChangeAction>
                   </LateralAction>
@@ -176,16 +197,44 @@
               </Action>
               <StartTrigger>
                 <ConditionGroup>
-                  <Condition name="AfterAdversaryAccelerates" delay="0" conditionEdge="rising">
-                    <ByValueCondition>
-                      <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="AdversaryAccelerates" state="completeState"/>
-                    </ByValueCondition>
+                  <Condition delay="0.0" conditionEdge="rising" name="Relative_Distance">
+                    <ByEntityCondition>
+                      <TriggeringEntities triggeringEntitiesRule="any">
+                        <EntityRef entityRef="adversary"/>
+                      </TriggeringEntities>
+                      <EntityCondition>
+                        <RelativeDistanceCondition freespace="false" rule="lessThan" entityRef="standing" value="$cutoutDistance" relativeDistanceType="longitudinal"/>
+                      </EntityCondition>
+                    </ByEntityCondition>
                   </Condition>
                 </ConditionGroup>
               </StartTrigger>
             </Event>
             <Event name="LeadingVehicleKeepsVelocity" priority="overwrite">
               <Action name="LeadingVehicleKeepsVelocity">
+                <PrivateAction>
+                  <LongitudinalAction>
+                    <SpeedAction>
+                      <SpeedActionDynamics dynamicsShape="linear" value="1" dynamicsDimension="distance"/>
+                      <SpeedActionTarget>
+                        <AbsoluteTargetSpeed value="$leadingSpeed"/>
+                      </SpeedActionTarget>
+                    </SpeedAction>
+                  </LongitudinalAction>
+                </PrivateAction>
+              </Action>
+              <StartTrigger>
+                <ConditionGroup>
+                  <Condition name="AfterAdversaryChangesLane" delay="0" conditionEdge="rising">
+                    <ByValueCondition>
+                      <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="AdversaryChangesLane" state="completeState"/>
+                    </ByValueCondition>
+                  </Condition>
+                </ConditionGroup>
+              </StartTrigger>
+            </Event>
+            <Event name="dummy" priority="overwrite">
+              <Action name="dummy">
                 <PrivateAction>
                   <LongitudinalAction>
                     <SpeedAction>
@@ -199,9 +248,9 @@
               </Action>
               <StartTrigger>
                 <ConditionGroup>
-                  <Condition name="AfterAdversaryChangesLane" delay="0" conditionEdge="rising">
+                  <Condition name="dummy" delay="0" conditionEdge="rising">
                     <ByValueCondition>
-                      <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="AdversaryChangesLane2" state="completeState"/>
+                      <StoryboardElementStateCondition storyboardElementType="action" storyboardElementRef="nonexist" state="completeState"/>
                     </ByValueCondition>
                   </Condition>
                 </ConditionGroup>

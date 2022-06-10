@@ -90,7 +90,7 @@ class SimpleVehicleControl(BasicControl):
         self._consider_obstacles = False
         self._proximity_threshold = float('inf')
         self._max_deceleration = None
-        self._max_acceleration = None
+        self._max_acceleration = 3.0
 
         self._obstacle_sensor = None
         self._obstacle_distance = float('inf')
